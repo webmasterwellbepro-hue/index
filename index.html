@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulateur de Compatibilité KARINE MDC</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .score-box {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            text-align: center;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+        .score-num {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+        .progress-bar {
+            background: var(--border);
+            border-radius: 9999px;
+            height: 12px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress-fill {
+            background: var(--primary);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .category {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+        .category h2 {
+            margin-top: 0;
+            font-size: 1.25rem;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+        .criterion {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .criterion:last-child {
+            border-bottom: none;
+        }
+        .criterion-info {
+            flex: 1;
+            padding-right: 15px;
+        }
+        .criterion-name {
+            font-weight: 500;
+        }
+        .criterion-pts {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Simulateur de Compatibilité KARINE MDC</h1>
+            <p>Cochez les critères respectés par le candidat</p>
+        </div>
+
+        <div class="score-box">
+            <div>Score global de compatibilité</div>
+            <div class="score-num" id="score-display">0%</div>
+            <div id="points-display">0 / 100 points</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>Identité & Valeurs</h2>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Religion</div>
+                    <div class="criterion-pts">Correspond à vos attentes</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="15" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Statut matrimonial</div>
+                    <div class="criterion-pts">Correspond à vos attentes</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="10" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Projet de vie</div>
+                    <div class="criterion-pts">Mariage, enfants...</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="10" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Pratique religieuse</div>
+                    <div class="criterion-pts">Shabbat, fêtes...</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="5" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Origine traditionnelle</div>
+                    <div class="criterion-pts">Correspond à vos attentes</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="5" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>Situation & Cadre</h2>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Distance</div>
+                    <div class="criterion-pts">Localisation idéale</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="9" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Âge</div>
+                    <div class="criterion-pts">Dans la tranche souhaitée</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="9" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Métier</div>
+                    <div class="criterion-pts">Correspond à vos attentes</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="5" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Revenus</div>
+                    <div class="criterion-pts">Tranche financière attendue</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="5" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Niveau d'étude</div>
+                    <div class="criterion-pts">Diplôme ou cursus attendu</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="2" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>Physique & Style</h2>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Silhouette</div>
+                    <div class="criterion-pts">Corpulence/Aspect général</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="6" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Aspect physique</div>
+                    <div class="criterion-pts">Beauté/Attrait général</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="6" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Coupe de cheveux</div>
+                    <div class="criterion-pts">Longueur/Style de coupe</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="3" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Style vestimentaire</div>
+                    <div class="criterion-pts">Look/Allure</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="2" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Couleur de cheveux</div>
+                    <div class="criterion-pts">Teinte attendue</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="2" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Couleur des yeux</div>
+                    <div class="criterion-pts">Teinte attendue</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="2" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>Personnalité</h2>
+            <div class="criterion">
+                <div class="criterion-info">
+                    <div class="criterion-name">Traits de caractère</div>
+                    <div class="criterion-pts">Tempérament principal attendu</div>
+                </div>
+                <label class="switch"><input type="checkbox" class="score-checkbox" data-pts="4" onchange="calculateScore()"><span class="slider"></span></label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateScore() {
+            const checkboxes = document.querySelectorAll('.score-checkbox');
+            let totalPoints = 0;
+            
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    totalPoints += parseInt(cb.getAttribute('data-pts'));
+                }
+            });
+            
+            document.getElementById('score-display').innerText = totalPoints + '%';
+            document.getElementById('points-display').innerText = totalPoints + ' / 100 points';
+            document.getElementById('progress-fill').style.width = totalPoints + '%';
+        }
+    </script>
+</body>
+</html>
